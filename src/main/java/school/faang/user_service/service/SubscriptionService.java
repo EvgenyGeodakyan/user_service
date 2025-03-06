@@ -17,7 +17,7 @@ import java.util.stream.Stream;
 @RequiredArgsConstructor
 public class SubscriptionService {
     private static final String SUBSCRIBED_EXCEPTION_FORM = "follower with id %d %s subscribed to followee with id %d";
-    private static final String USER_EXIST_FORM = "%s with id %d isn`t exist";
+    private static final String USER_EXIST_FORM = "follower with id %d isn`t exist";
 
     private final SubscriptionRepository subscriptionRepository;
     private final UserMapper userMapper;
@@ -45,18 +45,24 @@ public class SubscriptionService {
         return followers.map(userMapper::toDto).toList();
     }
 
-    private void validateFollowerAndFollowee(long followerId, long followeeId, String subscribed, boolean isSubscribed) {
-        if (subscriptionRepository.existsById(followerId)) {
-            throw new DataValidationException(String.format(USER_EXIST_FORM, "follower", followerId));
-        }
+    public int getFollowersCount(long followeeId) {
+        validateExistsFollower(followeeId);
+        return subscriptionRepository.findFollowersAmountByFolloweeId(followeeId);
+    }
 
-        if (subscriptionRepository.existsById(followeeId)) {
-            throw new DataValidationException(String.format(USER_EXIST_FORM, "followee", followeeId));
-        }
+    private void validateFollowerAndFollowee(long followerId, long followeeId, String subscribed, boolean isSubscribed) {
+        validateExistsFollower(followerId);
+        validateExistsFollower(followeeId);
 
         if (subscriptionRepository.existsByFollowerIdAndFolloweeId(followerId, followeeId) != isSubscribed) {
             throw new DataValidationException(
                     String.format(SUBSCRIBED_EXCEPTION_FORM, followerId, subscribed, followeeId));
+        }
+    }
+
+    private void validateExistsFollower(long followerId) {
+        if (subscriptionRepository.existsById(followerId)) {
+            throw new DataValidationException(String.format(USER_EXIST_FORM, followerId));
         }
     }
 }

@@ -31,6 +31,10 @@ public class SubscriptionController {
         return subscriptionService.getFollowers(followeeId, filter);
     }
 
+    public int getFollowersCount(long followeeId) {
+        return subscriptionService.getFollowersCount(followeeId);
+    }
+
     private void validateDifferenceIds(long followerId, long followeeId) {
         if (followerId == followeeId) {
             throw new DataValidationException("followerId and followeeId must be differences");
