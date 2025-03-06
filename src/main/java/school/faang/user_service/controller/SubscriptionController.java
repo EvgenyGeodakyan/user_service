@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import school.faang.user_service.dto.UserDto;
 import school.faang.user_service.dto.UserFilterDto;
+import school.faang.user_service.entity.User;
 import school.faang.user_service.exception.DataValidationException;
 import school.faang.user_service.service.SubscriptionService;
 import school.faang.user_service.validator.UserFilterValidator;
@@ -31,8 +32,17 @@ public class SubscriptionController {
         return subscriptionService.getFollowers(followeeId, filter);
     }
 
+    public List<UserDto> getFollowers(long followeeId) {
+        return subscriptionService.getFollowers(followeeId);
+    }
+
     public int getFollowersCount(long followeeId) {
         return subscriptionService.getFollowersCount(followeeId);
+    }
+
+
+    public List<UserDto> getFollowee(long followerId) {
+        return subscriptionService.getFollowee(followerId);
     }
 
     private void validateDifferenceIds(long followerId, long followeeId) {

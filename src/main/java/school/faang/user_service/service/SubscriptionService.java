@@ -34,6 +34,7 @@ public class SubscriptionService {
     }
 
     public List<UserDto> getFollowers(long followeeId, UserFilterDto filterDto) {
+        validateExistsFollower(followeeId);
         Stream<User> followers = subscriptionRepository.findByFollowerId(followeeId);
 
         for (UserFilter filter : userFilters) {
@@ -45,9 +46,19 @@ public class SubscriptionService {
         return followers.map(userMapper::toDto).toList();
     }
 
+    public List<UserDto> getFollowers(long followeeId) {
+        validateExistsFollower(followeeId);
+        return subscriptionRepository.findByFolloweeId(followeeId).map(userMapper::toDto).toList();
+    }
+
     public int getFollowersCount(long followeeId) {
         validateExistsFollower(followeeId);
         return subscriptionRepository.findFollowersAmountByFolloweeId(followeeId);
+    }
+
+    public List<UserDto> getFollowee(long followerId) {
+        validateExistsFollower(followerId);
+        return subscriptionRepository.findByFollowerId(followerId).map(userMapper::toDto).toList();
     }
 
     private void validateFollowerAndFollowee(long followerId, long followeeId, String subscribed, boolean isSubscribed) {
