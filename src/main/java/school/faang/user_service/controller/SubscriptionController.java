@@ -15,6 +15,11 @@ public class SubscriptionController {
         subscriptionService.followUser(followerId, followeeId);
     }
 
+    public void unfollowUser(long followerId, long followeeId) {
+        validateDifferenceIds(followerId, followeeId);
+        subscriptionService.unfollowUser(followerId, followeeId);
+    }
+
     private void validateDifferenceIds(long followerId, long followeeId) {
         if (followerId == followeeId) {
             throw new DataValidationException("followerId and followeeId must be differences");
